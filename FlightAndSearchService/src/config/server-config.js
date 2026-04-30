@@ -3,7 +3,8 @@ const dotenv = require('dotenv'); // importing the dotenv packages
 dotenv.config(); // activating the dotenv package and dotenv reads the env file and loads data in process.env
 
 module.exports = {
-    PORT: process.env.PORT  //exporting the port's value from process env -> config file and rest of the app
+    PORT: process.env.PORT,  //exporting the port's value from process env -> config file and rest of the app
+    SERVICE : process.env.SERVICE_NAME //exporting service name from .process env 
 }
 
 //  we are configuring our server using .env  dotenv and process.env 
