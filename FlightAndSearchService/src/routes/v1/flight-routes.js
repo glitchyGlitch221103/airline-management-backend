@@ -1,34 +1,22 @@
 const express = require('express');
+const FlightController = require('../../controllers/flight-controller');
 
 const router = express.Router();
 
-// Static route to search flights using query parameters (from, to)
-router.get('/search', (req, res) =>  {  
-    return res.status(200).json({
-        data: {},
-        message: `GET /flights/search — from: ${req.query.from}, to: ${req.query.to}`
-    });
-});
+// Middleware — validates search params before controller runs
 
-// Dynamic route to fetch a specific flight by id (':id' is a route parameter)
-router.get('/:id', (req, res) => {
-    return res.status(200).json({
-        data: {},
-        message: `GET /flights/${req.params.id}`
-    });
-});
+const validateSearchParams = (req, res, next) => {
+    const { from, to } = req.query;
+    if (!from || !to) {
+        return res.status(400).json({
+            message: 'from and to query parameters are required'
+        });
+    }
+    next();  // CRITICAL -> without this request wont move forward it will hang here 
+};
 
-// Static route to fetch all flights
-router.get('/', (req, res) => { 
-    return res.status(200).json({
-        data: {},
-        message: 'GET all flights'
-    });
-});
+router.get('/search', validateSearchParams, FlightController.searchFlights);
+router.get('/:id', FlightController.getFlightById);
+router.get('/', FlightController.getAllFlights);
 
 module.exports = router;
-
-// Important note:
-// '/search' is defined before '/:id' because Express matches routes in order.
-// If '/:id' comes first, a request to '/search' would be treated as id = 'search',
-// which would lead to incorrect behavior.
