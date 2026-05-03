@@ -1,38 +1,22 @@
-const express = require('express');
-const serverConfig = require('./config/server-config')
+const express = require('express');  // import the express module 
+const { PORT, SERVICE_NAME } = require('./config/server-config'); //import the port and service from config/server-config
+const apiRouter = require('./routes/v1'); //import the route which was exported from ./routes/v1.
 
-const app = express();
+// export -> router was made available to be used by other other files using // module.export //
 
-// first api 
-app.get('/api/v1/flights' ,(req,res) => {
-    res.status(200).json ({
-        message : 'api is working correctly',
-        success : true 
-    })
-})
-//third api  --> third api was written before 2nd because in the request url it will consider "search" as id(*second api*) and will not work properly
-app.get('/api/v1/flights/search' ,(req,res) => {
-    
-    const {from , to} = req.query;
+const app = express(); // starts the express app
 
-    res.status(200).json ({
-        message : `the requested query is : from = ${from} and to = ${to}`,
-        success : true
-    })
-})
+app.use(express.json()); // ** Middleware 1 — parse JSON bodies **  parse the data sent by user in the request in json format , basically reading the json data.
 
-// second api 
-app.get('/api/v1/flights/:id' ,(req,res) => {
-    const id = req.params.id;
+// Middleware 2 — log every request//
+app.use((req, res, next) => {
+    console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
+    next();   // ← CRITICAL: without this, every request hangs forever
+});
 
-    console.log("request hit success")
 
-    res.status(200).json ({
-        message : `the requested id is : ${id}`,
-        success : true 
-    })
-})
+app.use('/api/v1', apiRouter); // any request that is starting with * /api/v1 * should be mount / connect to  * apiRouter *
 
-app.listen(serverConfig.PORT, () => {
-    console.log(`${serverConfig.SERVICE} started on port ${serverConfig.PORT}`);
+app.listen(PORT, () => {
+    console.log(`${SERVICE_NAME} started on port ${PORT}`);
 });
