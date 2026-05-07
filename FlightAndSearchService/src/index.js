@@ -2,6 +2,8 @@ const express = require('express');  // import the express module
 const { PORT, SERVICE_NAME } = require('./config/server-config'); //import the port and service from config/server-config
 const apiRouter = require('./routes/v1'); //import the route which was exported from ./routes/v1.
 
+require('./models/index');  // ← this line — runs connectDB on server start
+
 // export -> router was made available to be used by other other files using // module.export //
 
 const app = express(); // starts the express app
