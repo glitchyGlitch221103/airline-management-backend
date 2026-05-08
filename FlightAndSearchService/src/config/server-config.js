@@ -4,7 +4,12 @@ dotenv.config(); // activating the dotenv package and dotenv reads the env file 
 
 module.exports = {
     PORT: process.env.PORT,  //exporting the port's value from process env -> config file and rest of the app
-    SERVICE : process.env.SERVICE_NAME //exporting service name from .process env 
+    SERVICE_NAME : process.env.SERVICE_NAME, //exporting service name from .process env 
+    DB_HOST: process.env.DB_HOST,
+    DB_USER: process.env.DB_USER,
+    DB_PASSWORD: process.env.DB_PASSWORD,
+    DB_NAME: process.env.DB_NAME,
+    DB_DIALECT: process.env.DB_DIALECT
 }
 
 //  we are configuring our server using .env  dotenv and process.env 
