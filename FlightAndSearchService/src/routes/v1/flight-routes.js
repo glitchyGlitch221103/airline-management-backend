@@ -3,8 +3,6 @@ const FlightController = require('../../controllers/flight-controller');
 
 const router = express.Router();
 
-// Middleware — validates search params before controller runs
-
 const validateSearchParams = (req, res, next) => {
     const { from, to } = req.query;
     if (!from || !to) {
@@ -12,11 +10,14 @@ const validateSearchParams = (req, res, next) => {
             message: 'from and to query parameters are required'
         });
     }
-    next();  // CRITICAL -> without this request wont move forward it will hang here 
+    next();
 };
 
 router.get('/search', validateSearchParams, FlightController.searchFlights);
 router.get('/:id', FlightController.getFlightById);
 router.get('/', FlightController.getAllFlights);
+router.post('/', FlightController.createFlight);
+router.put('/:id', FlightController.updateFlight);
+router.delete('/:id', FlightController.deleteFlight);
 
 module.exports = router;
