@@ -1,6 +1,7 @@
 const express = require('express');  // import the express module 
 const { PORT, SERVICE_NAME } = require('./config/server-config'); //import the port and service from config/server-config
 const apiRouter = require('./routes/v1'); //import the route which was exported from ./routes/v1.
+const errorHandler = require('./middlewares/error-handler');
 
 require('./models/index');  // ← this line — runs connectDB on server start
 
@@ -18,6 +19,8 @@ app.use((req, res, next) => {
 
 
 app.use('/api/v1', apiRouter); // any request that is starting with * /api/v1 * should be mount / connect to  * apiRouter *
+
+app.use(errorHandler);
 
 app.listen(PORT, () => {
     console.log(`${SERVICE_NAME} started on port ${PORT}`);

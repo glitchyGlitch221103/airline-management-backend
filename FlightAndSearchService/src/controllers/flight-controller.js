@@ -1,6 +1,7 @@
 const Flight = require('../models/flights');
+const AppError = require('../utils/app-error');
 
-const getAllFlights = async (req, res) => {
+const getAllFlights = async (req, res, next) => {
     try {
         const flights = await Flight.findAll();
         return res.status(200).json({
@@ -8,29 +9,26 @@ const getAllFlights = async (req, res) => {
             message: 'Flights fetched successfully'
         });
     } catch (error) {
-        return res.status(500).json({
-            message: 'Internal server error',
-            error: error.message
-        });
+        next(error);
     }
 };
 
-const getFlightById = async (req, res) => {
+const getFlightById = async (req, res, next) => {
     try {
         const flight = await Flight.findByPk(req.params.id);
         if (!flight) {
-            return res.status(404).json({ message: 'Flight not found' });
+            return next(new AppError('Flight not found', 404));
         }
         return res.status(200).json({
             data: flight,
             message: 'Flight fetched successfully'
         });
     } catch (error) {
-        return res.status(500).json({ message: 'Internal server error', error: error.message });
+        next(error);
     }
 };
 
-const createFlight = async (req, res) => {
+const createFlight = async (req, res, next) => {
     try {
         const flight = await Flight.create(req.body);
         return res.status(201).json({
@@ -38,15 +36,15 @@ const createFlight = async (req, res) => {
             message: 'Flight created successfully'
         });
     } catch (error) {
-        return res.status(500).json({ message: 'Internal server error', error: error.message });
+        next(error);
     }
 };
 
-const updateFlight = async (req, res) => {
+const updateFlight = async (req, res, next) => {
     try {
         const flight = await Flight.findByPk(req.params.id);
         if (!flight) {
-            return res.status(404).json({ message: 'Flight not found' });
+            return next(new AppError('Flight not found', 404));
         }
         await flight.update(req.body);
         return res.status(200).json({
@@ -54,24 +52,24 @@ const updateFlight = async (req, res) => {
             message: 'Flight updated successfully'
         });
     } catch (error) {
-        return res.status(500).json({ message: 'Internal server error', error: error.message });
+        next(error);
     }
 };
 
-const deleteFlight = async (req, res) => {
+const deleteFlight = async (req, res, next) => {
     try {
         const flight = await Flight.findByPk(req.params.id);
         if (!flight) {
-            return res.status(404).json({ message: 'Flight not found' });
+            return next(new AppError('Flight not found', 404));
         }
         await flight.destroy();
         return res.status(200).json({ message: 'Flight deleted successfully' });
     } catch (error) {
-        return res.status(500).json({ message: 'Internal server error', error: error.message });
+        next(error);
     }
 };
 
-const searchFlights = async (req, res) => {
+const searchFlights = async (req, res, next) => {
     try {
         const { from, to } = req.query;
         const flights = await Flight.findAll({
@@ -85,7 +83,7 @@ const searchFlights = async (req, res) => {
             message: 'Flights fetched successfully'
         });
     } catch (error) {
-        return res.status(500).json({ message: 'Internal server error', error: error.message });
+        next(error);
     }
 };
 

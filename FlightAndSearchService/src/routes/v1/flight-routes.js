@@ -11,7 +11,7 @@ const validateSearchParams = (req, res, next) => {
         });
     }
     next();
-};
+}; //middleware -> to validate the parameters 
 
 router.get('/search', validateSearchParams, FlightController.searchFlights);
 router.get('/:id', FlightController.getFlightById);
